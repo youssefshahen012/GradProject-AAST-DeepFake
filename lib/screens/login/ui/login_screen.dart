@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Gap(10.h),
                     Text(
-                      "Login To Continue Using The App",
+                      "Login To DeepFake AI AAST App",
                       style: TextStyles.font14Grey400Weight,
                     ),
                   ],

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "377946432959",
+    "project_id": "deepfake-c64a9",
+    "storage_bucket": "deepfake-c64a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377946432959:android:8bb499757ee88663f32d0a",
+        "android_client_info": {
+          "package_name": "com.example.signup_rest_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377946432959-lni1ptm7j91ljr6vjl25njtj465qj734.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlU_JVGF1MlzB-pMWS7a5uDhw9B8lVrfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377946432959-lni1ptm7j91ljr6vjl25njtj465qj734.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "377946432959-0ojvrese9obl57hkvv1f7ntq9vf22c7c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.signupRestLogin.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -36,7 +36,7 @@ class SignUpScreen extends StatelessWidget {
                 Gap(8.h),
                 Column(
                   children: [
-                    const EmailAndPassword(
+                    EmailAndPassword(
                       isSignUpPage: true,
                     ),
                     Gap(10.h),
