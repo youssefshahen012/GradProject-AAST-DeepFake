@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="signup_rest_login"
+        android:label="Grad_Project_AAST"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
