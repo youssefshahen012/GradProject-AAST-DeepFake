@@ -38,13 +38,13 @@ Follow these instructions to get the project up and running on your local machin
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/MoazSayed7/Flutter-Animated-Auth-Screens-Firebase-Login-SignUp-Reset-SignWithGoogle.git
+    git clone https://github.com/youssefshahen012/GradProject-AAST-DeepFake.git)
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd Flutter-Animated-Auth-Screens-Firebase-Login-SignUp-Reset-SignWithGoogle
+    cd GradProject-AAST-DeepFake
     ```
 
 3. Install dependencies:
