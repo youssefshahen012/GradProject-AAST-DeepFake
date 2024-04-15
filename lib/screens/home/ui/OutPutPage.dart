@@ -1,23 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
-class OutPutPage extends StatelessWidget {
-  // Sample list of video URLs
-  final List<String> videoUrls = [
-    'lib/screens/home/ui/VideosShow/wav2lip final video.mp4',
-    // Add more video URLs here...
-  ];
+class OutPutPage extends StatefulWidget {
+  @override
+  _OutPutPageState createState() => _OutPutPageState();
+}
 
-  Future<void> _downloadVideo(String videoUrl) async {
-    final taskId = await FlutterDownloader.enqueue(
-      url: videoUrl,
-      savedDir: '/path/to/download', // Specify the directory where you want to save the video
-      fileName: 'video.mp4', // Specify the filename for the downloaded video
-      showNotification: true, // Show download progress notification
-      openFileFromNotification: true, // Open the downloaded file when tapping the notification
-    );
+class _OutPutPageState extends State<OutPutPage> {
+  final String videoUrl = 'gs://deepfake-c64a9.appspot.com/videotest/wav2lip final video.mp4'; // Firebase Storage video URL
+
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    try {
+      // Create a reference to the Firebase Storage video URL
+      final storageRef = FirebaseStorage.instance.refFromURL(videoUrl);
+
+      // Get download URL for the video
+      final downloadUrl = await storageRef.getDownloadURL();
+
+      // Initialize video player controller
+      _videoPlayerController = VideoPlayerController.network(downloadUrl);
+
+      // Initialize chewie controller
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController!,
+        autoPlay: true,
+        looping: true,
+        allowFullScreen: true,
+      );
+
+      setState(() {});
+    } catch (e) {
+      print('Error initializing video: $e');
+      // Handle error initializing video
+    }
+  }
+
+  Future<void> _downloadVideo() async {
+    try {
+      // Get the app's directory path
+      final directory = await getExternalStorageDirectory();
+      final savePath = '${directory!.path}/video.mp4';
+
+      // Start downloading the video
+      final taskId = await FlutterDownloader.enqueue(
+        url: videoUrl,
+        savedDir: directory.path,
+        fileName: 'video.mp4',
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+    } catch (e) {
+      // Handle any errors that occur during the download process
+      print('Download failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Download failed: $e'),
+      ));
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    _chewieController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,92 +101,36 @@ class OutPutPage extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
+      body: _videoPlayerController != null && _chewieController != null
+          ? Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AspectRatio(
-            aspectRatio:0.8,
+            aspectRatio: 1, // Adjust the aspect ratio as per your video's dimensions
             child: Chewie(
-              controller: ChewieController(
-                videoPlayerController: VideoPlayerController.network(
-                  videoUrls.first,
-                ),
-                autoPlay: true,
-                looping: true,
-                 allowFullScreen:true,
-
-
-              ),
+              controller: _chewieController!,
             ),
           ),
           SizedBox(height: 20),
           Text(
-            'Video Catalog',
+            'Video Details',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: videoUrls.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    // Handle video tap
-                    // Navigate to a video detail page or play the video
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.grey[300], // Placeholder for video thumbnail
-                          // You can use CachedNetworkImage or Image.network to load thumbnails
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Video Title ${index + 1}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Video Description ${index + 1}',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(height: 5),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _downloadVideo(videoUrls[index]);
-                                },
-                                child: Text('Download Video'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              _downloadVideo();
+            },
+            child: Text('Download Video'),
           ),
         ],
+      )
+          : Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
